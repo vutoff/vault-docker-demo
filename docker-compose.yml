@@ -1,0 +1,48 @@
+version: "3.8"
+services:
+  db:
+    image: postgres:14.6
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: "mypassword"
+    networks:
+      vault-network:
+        ipv4_address: 172.21.0.30
+        aliases:
+          - db
+  vault-server:
+    image: vault:latest
+    ports:
+      - "8200:8200"
+    environment:
+      VAULT_ADDR: "http://0.0.0.0:8200"
+      VAULT_DEV_ROOT_TOKEN_ID: "my-very-secure-token"
+    cap_add:
+      - IPC_LOCK
+    networks:
+      vault-network:
+        ipv4_address: 172.21.0.10
+        aliases:
+          - vault-server
+    depends_on:
+      - "db"
+  vault-client:
+    build: .
+    environment:
+      VAULT_ADDR: "http://vault-server:8200"
+      DB_HOST: db
+      DB_USER: postgres
+      DB_PASS: mypassword
+    networks:
+      vault-network:
+        ipv4_address: 172.21.0.20
+        aliases:
+          - vault-client
+    depends_on:
+      - "db"
+networks:
+  vault-network:
+    ipam:
+      config:
+        - subnet: 172.21.0.0/24
