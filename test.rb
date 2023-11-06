@@ -10,7 +10,10 @@ Vault.configure do |config|
 end
 
 Vault.with_retries(Vault::HTTPConnectionError, Vault::HTTPError) do |attempt, e|
-  puts "Received exception #{e} from Vault - attempt #{attempt}"
-  dbcreds = Vault.logical.read('database/creds/my-role')
-  puts dbcreds.data # will return hash
+  begin
+    dbcreds = Vault.logical.read('database/creds/my-role')
+    puts dbcreds.data # will return hash
+  rescue Vault::HTTPError => e
+    puts e.message
+  end
 end
