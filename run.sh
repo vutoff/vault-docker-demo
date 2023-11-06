@@ -10,11 +10,11 @@ echo "Authenticating to vault..."
 vault login token=my-very-secure-token
 
 echo "Initializing vault..."
-vault secrets enable -version=2 -path=my.secrets kv
+vault secrets enable -version=2 -path=secrets kv
 
 echo "Adding entries..."
-vault kv put my.secrets/dev username=test_user
-vault kv put my.secrets/dev password=test_password
+vault kv put secrets/dev username=test_user
+vault kv put secrets/dev password=test_password
 
 echo "Enable DB engine"
 vault secrets enable database
