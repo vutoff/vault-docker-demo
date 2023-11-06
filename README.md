@@ -10,6 +10,12 @@
 docker-compose up -d
 ```
 
+- Set `VAULT_ADDR` to `http://localhost:8200`
+
+```sh
+export VAULT_ADDR=http://localhost:8200
+```
+
 - Authenticate to the Vault server
 The root token is `my-very-secure-token`. Invoke
 
